@@ -17,7 +17,7 @@ import com.intellij.ui.content.ContentManager;
 import com.intellij.ui.table.JBTable;
 import handler.TianTianFundHandler;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import quartz.HandlerJob;
@@ -153,14 +153,13 @@ public class FundWindow implements ToolWindowFactory {
             }
         };
         ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(table)
-                .addExtraAction(new AnActionButton("持续刷新当前表格数据", AllIcons.Actions.Refresh) {
+                .addExtraActions(new AnActionButton("持续刷新当前表格数据", AllIcons.Actions.Refresh) {
                     @Override
                     public void actionPerformed(@NotNull AnActionEvent e) {
                         refresh();
                         refreshAction.setEnabled(true);
                     }
-                })
-                .addExtraAction(refreshAction)
+                }, refreshAction)
                 .setToolbarPosition(ActionToolbarPosition.TOP);
         JPanel toolPanel = toolbarDecorator.createPanel();
         toolbarDecorator.getActionsPanel().add(refreshTimeLabel, BorderLayout.EAST);
