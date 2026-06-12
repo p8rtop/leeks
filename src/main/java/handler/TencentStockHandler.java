@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,8 @@ public class TencentStockHandler extends StockRefreshHandler {
     private String urlPara;
     private HashMap<String, String[]> codeMap;
     private JLabel refreshTimeLabel;
+    
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     public TencentStockHandler(JTable table1, JLabel refreshTimeLabel) {
@@ -118,7 +121,7 @@ public class TencentStockHandler extends StockRefreshHandler {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                refreshTimeLabel.setText(LocalDateTime.now().format(TianTianFundHandler.timeFormatter));
+                refreshTimeLabel.setText(LocalDateTime.now().format(TIME_FORMATTER));
                 refreshTimeLabel.setToolTipText("最后刷新时间");
             }
         });

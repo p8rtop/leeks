@@ -14,6 +14,12 @@ import handler.StockRefreshHandler;
 import handler.TencentStockHandler;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentFactory;
+import com.intellij.ui.content.ContentManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import quartz.HandlerJob;
@@ -33,7 +39,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class StockWindow {
+public class StockWindow implements ToolWindowFactory {
     public static final String NAME = "Stock";
     private JPanel mPanel;
 
@@ -41,6 +47,24 @@ public class StockWindow {
 
     static JBTable table;
     static JLabel refreshTimeLabel;
+
+    @Override
+    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        ContentFactory contentFactory = ContentFactory.getInstance();
+        Content content = contentFactory.createContent(mPanel, NAME, false);
+        ContentManager contentManager = toolWindow.getContentManager();
+        contentManager.addContent(content);
+    }
+
+    @Override
+    public boolean shouldBeAvailable(@NotNull Project project) {
+        return true;
+    }
+
+    @Override
+    public boolean isDoNotActivateOnStart() {
+        return true;
+    }
 
     public JPanel getmPanel() {
         return mPanel;
@@ -190,7 +214,6 @@ public class StockWindow {
     }
 
     private static List<String> loadStocks(){
-//        return FundWindow.getConfigList("key_stocks", "[,，]");
         return SettingsWindow.getConfigList("key_stocks");
     }
 
