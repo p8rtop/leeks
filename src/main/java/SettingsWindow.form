@@ -117,6 +117,203 @@
               </component>
             </children>
           </grid>
+          <grid id="d7f3a" layout-manager="GridLayoutManager" row-count="13" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="5" vgap="5">
+            <margin top="10" left="10" bottom="10" right="10"/>
+            <constraints>
+              <tabbedpane title="提示词">
+                <tooltip value="配置AI分析提示词模板"/>
+              </tabbedpane>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="a1b2c" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="今日机会分析提示词（留空使用默认）："/>
+                </properties>
+              </component>
+              <scrollpane id="s1a2b">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="600" height="100"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <verticalScrollBarPolicy value="22"/>
+                  <horizontalScrollBarPolicy value="30"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="t1e2x" class="javax.swing.JTextArea" binding="textAreaTodayOpportunity">
+                    <constraints/>
+                    <properties>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="true"/>
+                      <toolTipText value="配置今日机会分析的提示词模板"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="a3b4c" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="明日机会分析提示词（留空使用默认）："/>
+                </properties>
+              </component>
+              <scrollpane id="s3a4b">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="600" height="100"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <verticalScrollBarPolicy value="22"/>
+                  <horizontalScrollBarPolicy value="30"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="t3e4x" class="javax.swing.JTextArea" binding="textAreaTomorrowOpportunity">
+                    <constraints/>
+                    <properties>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="true"/>
+                      <toolTipText value="配置明日机会分析的提示词模板"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="a5b6c" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="4" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="仓位风险分析提示词（留空使用默认）："/>
+                </properties>
+              </component>
+              <scrollpane id="s5a6b">
+                <constraints>
+                  <grid row="5" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="600" height="100"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <verticalScrollBarPolicy value="22"/>
+                  <horizontalScrollBarPolicy value="30"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="t5e6x" class="javax.swing.JTextArea" binding="textAreaPositionRisk">
+                    <constraints/>
+                    <properties>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="true"/>
+                      <toolTipText value="配置仓位风险分析的提示词模板"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="b1c2d" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="6" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="昨日复盘分析提示词（留空使用默认）："/>
+                </properties>
+              </component>
+              <scrollpane id="u1v2w">
+                <constraints>
+                  <grid row="7" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="600" height="100"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <verticalScrollBarPolicy value="22"/>
+                  <horizontalScrollBarPolicy value="30"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="x1y2z" class="javax.swing.JTextArea" binding="textAreaYesterdayReview">
+                    <constraints/>
+                    <properties>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="true"/>
+                      <toolTipText value="配置昨日复盘分析的提示词模板"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="b3c4d" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="8" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="今日复盘分析提示词（留空使用默认）："/>
+                </properties>
+              </component>
+              <scrollpane id="u3v4w">
+                <constraints>
+                  <grid row="9" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="600" height="100"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <verticalScrollBarPolicy value="22"/>
+                  <horizontalScrollBarPolicy value="30"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="x3y4z" class="javax.swing.JTextArea" binding="textAreaTodayReview">
+                    <constraints/>
+                    <properties>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="true"/>
+                      <toolTipText value="配置今日复盘分析的提示词模板"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="b5c6d" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="10" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="异动实事分析提示词（留空使用默认）："/>
+                </properties>
+              </component>
+              <scrollpane id="u5v6w">
+                <constraints>
+                  <grid row="11" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="600" height="100"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <verticalScrollBarPolicy value="22"/>
+                  <horizontalScrollBarPolicy value="30"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="x5y6z" class="javax.swing.JTextArea" binding="textAreaAbnormalMovement">
+                    <constraints/>
+                    <properties>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="true"/>
+                      <toolTipText value="配置异动实事分析的提示词模板"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <vspacer id="vspacer1">
+                <constraints>
+                  <grid row="12" column="0" row-span="1" col-span="3" vsize-policy="2" hsize-policy="3" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+            </children>
+          </grid>
         </children>
       </tabbedpane>
       <component id="8c26" class="javax.swing.JLabel">

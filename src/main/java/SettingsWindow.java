@@ -32,6 +32,14 @@ public class SettingsWindow  implements Configurable {
     private JLabel proxyLabel;
     private JTextField inputProxy;
     private JButton proxyTestButton;
+    
+    // AI分析提示词配置
+    private JTextArea textAreaTodayOpportunity;
+    private JTextArea textAreaTomorrowOpportunity;
+    private JTextArea textAreaPositionRisk;
+    private JTextArea textAreaYesterdayReview;
+    private JTextArea textAreaTodayReview;
+    private JTextArea textAreaAbnormalMovement;
 
     @Override
     public @Nls(capitalization = Nls.Capitalization.Title) String getDisplayName() {
@@ -58,6 +66,14 @@ public class SettingsWindow  implements Configurable {
                 testProxy(proxy);
             }
         });
+        
+        // 加载AI分析提示词配置
+        textAreaTodayOpportunity.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_TODAY_OPPORTUNITY, ""));
+        textAreaTomorrowOpportunity.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_TOMORROW_OPPORTUNITY, ""));
+        textAreaPositionRisk.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_POSITION_RISK, ""));
+        textAreaYesterdayReview.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_YESTERDAY_REVIEW, ""));
+        textAreaTodayReview.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_TODAY_REVIEW, ""));
+        textAreaAbnormalMovement.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_ABNORMAL_MOVEMENT, ""));
         return panel1;
     }
 
@@ -82,6 +98,15 @@ public class SettingsWindow  implements Configurable {
         String proxy = inputProxy.getText().trim();
         instance.setValue("key_proxy",proxy);
         HttpClientPool.getHttpClient().buildHttpClient(proxy);
+        
+        // 保存AI分析提示词配置
+        instance.setValue(utils.AnalysisPromptUtils.KEY_TODAY_OPPORTUNITY, textAreaTodayOpportunity.getText().trim());
+        instance.setValue(utils.AnalysisPromptUtils.KEY_TOMORROW_OPPORTUNITY, textAreaTomorrowOpportunity.getText().trim());
+        instance.setValue(utils.AnalysisPromptUtils.KEY_POSITION_RISK, textAreaPositionRisk.getText().trim());
+        instance.setValue(utils.AnalysisPromptUtils.KEY_YESTERDAY_REVIEW, textAreaYesterdayReview.getText().trim());
+        instance.setValue(utils.AnalysisPromptUtils.KEY_TODAY_REVIEW, textAreaTodayReview.getText().trim());
+        instance.setValue(utils.AnalysisPromptUtils.KEY_ABNORMAL_MOVEMENT, textAreaAbnormalMovement.getText().trim());
+        
         StockWindow.apply();
     }
 

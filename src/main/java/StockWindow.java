@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import quartz.HandlerJob;
 import quartz.QuartzManager;
+import utils.AnalysisPromptUtils;
 import utils.LogUtil;
 import utils.PopupsUiUtil;
 import utils.WindowUtils;
@@ -31,6 +32,8 @@ import utils.WindowUtils;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -143,14 +146,31 @@ public class StockWindow implements ToolWindowFactory {
                 this.setEnabled(false);
             }
         };
+
+        // 创建各个分析场景的按钮
+        AnActionButton todayOpportunityAction = createAnalysisButton("今日机会", AllIcons.Actions.IntentionBulb, "today_opportunity");
+        AnActionButton tomorrowOpportunityAction = createAnalysisButton("明日机会", AllIcons.Actions.Forward, "tomorrow_opportunity");
+        AnActionButton positionRiskAction = createAnalysisButton("仓位风险", AllIcons.General.Error, "position_risk");
+        AnActionButton yesterdayReviewAction = createAnalysisButton("昨日复盘", AllIcons.Actions.Back, "yesterday_review");
+        AnActionButton todayReviewAction = createAnalysisButton("今日复盘", AllIcons.Actions.Refresh, "today_review");
+        AnActionButton abnormalMovementAction = createAnalysisButton("异动实事", AllIcons.Actions.Refresh, "abnormal_movement");
         ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(table)
-                .addExtraActions(new AnActionButton("持续刷新当前表格数据", AllIcons.Actions.Refresh) {
-                    @Override
-                    public void actionPerformed(@NotNull AnActionEvent e) {
-                        refresh();
-                        refreshAction.setEnabled(true);
-                    }
-                }, refreshAction)
+                .addExtraActions(
+                    new AnActionButton("持续刷新当前表格数据", AllIcons.Actions.Refresh) {
+                        @Override
+                        public void actionPerformed(@NotNull AnActionEvent e) {
+                            refresh();
+                            refreshAction.setEnabled(true);
+                        }
+                    },
+                    refreshAction,
+                    todayOpportunityAction,
+                    tomorrowOpportunityAction,
+                    positionRiskAction,
+                    yesterdayReviewAction,
+                    todayReviewAction,
+                    abnormalMovementAction
+                )
                 .setToolbarPosition(ActionToolbarPosition.TOP);
         JPanel toolPanel = toolbarDecorator.createPanel();
         toolbarDecorator.getActionsPanel().add(refreshTimeLabel, BorderLayout.EAST);
@@ -215,6 +235,115 @@ public class StockWindow implements ToolWindowFactory {
 
     private static List<String> loadStocks(){
         return SettingsWindow.getConfigList("key_stocks");
+    }
+
+    /**
+     * 创建分析按钮
+     */
+    private AnActionButton createAnalysisButton(String title, javax.swing.Icon icon, String type) {
+        return new AnActionButton(title, icon) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                copyAnalysisToClipboard(type);
+            }
+        };
+    }
+
+    /**
+     * 生成股票分析文本并复制到剪贴板
+     * @param type 分析类型
+     */
+    private void copyAnalysisToClipboard(String type) {
+        if (handler == null || table.getModel().getRowCount() == 0) {
+            JOptionPane.showMessageDialog(mPanel, "当前没有股票数据", "提示", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        StringBuilder analysisText = new StringBuilder();
+
+        // 获取基础模板
+        String baseTemplate = AnalysisPromptUtils.getBaseStockInfoTemplate();
+
+        // 生成时间字符串
+        String timeStr = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        // 生成股票列表字符串
+        StringBuilder stockListBuilder = new StringBuilder();
+        int rowCount = table.getModel().getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            int modelRow = table.convertRowIndexToModel(i);
+            String code = String.valueOf(table.getModel().getValueAt(modelRow, handler.codeColumnIndex));
+            String name = String.valueOf(table.getModel().getValueAt(modelRow, 1)); // 股票名称
+            String currentPrice = String.valueOf(table.getModel().getValueAt(modelRow, 6)); // 当前价
+            String change = String.valueOf(table.getModel().getValueAt(modelRow, 2)); // 涨跌
+            String changePercent = String.valueOf(table.getModel().getValueAt(modelRow, 3)); // 涨跌幅
+            String highPrice = String.valueOf(table.getModel().getValueAt(modelRow, 4)); // 最高价
+            String lowPrice = String.valueOf(table.getModel().getValueAt(modelRow, 5)); // 最低价
+            String costPrice = String.valueOf(table.getModel().getValueAt(modelRow, 7)); // 成本价
+            String bonds = String.valueOf(table.getModel().getValueAt(modelRow, 8)); // 持仓
+            String incomePercent = String.valueOf(table.getModel().getValueAt(modelRow, 9)); // 收益率
+            String income = String.valueOf(table.getModel().getValueAt(modelRow, 10)); // 收益
+
+            stockListBuilder.append(String.format("%d. %s(%s)\n", i + 1, name, code));
+            stockListBuilder.append(String.format("   当前价: %s, 涨跌: %s, 涨跌幅: %s\n", currentPrice, change, changePercent));
+            stockListBuilder.append(String.format("   最高价: %s, 最低价: %s\n", highPrice, lowPrice));
+            if (!"--".equals(costPrice) && !"null".equals(costPrice)) {
+                stockListBuilder.append(String.format("   成本价: %s, 持仓: %s股, 收益率: %s%%, 收益: %s元\n",
+                    costPrice, bonds, incomePercent, income));
+            }
+            stockListBuilder.append("\n");
+        }
+
+        // 填充基础模板
+        String filledBaseTemplate = AnalysisPromptUtils.fillTemplate(baseTemplate, timeStr, stockListBuilder.toString());
+        analysisText.append(filledBaseTemplate);
+
+        // 根据类型添加对应的分析要求
+        String analysisPrompt;
+        switch (type) {
+            case "today_opportunity":
+                analysisPrompt = AnalysisPromptUtils.getTodayOpportunityPrompt();
+                break;
+            case "tomorrow_opportunity":
+                analysisPrompt = AnalysisPromptUtils.getTomorrowOpportunityPrompt();
+                break;
+            case "position_risk":
+                analysisPrompt = AnalysisPromptUtils.getPositionRiskPrompt();
+                break;
+            case "yesterday_review":
+                analysisPrompt = AnalysisPromptUtils.getYesterdayReviewPrompt();
+                break;
+            case "today_review":
+                analysisPrompt = AnalysisPromptUtils.getTodayReviewPrompt();
+                break;
+            case "abnormal_movement":
+                analysisPrompt = AnalysisPromptUtils.getAbnormalMovementPrompt();
+                break;
+            default:
+                analysisPrompt = "请给出综合分析建议。";
+        }
+
+        analysisText.append(analysisPrompt);
+
+        // 复制到剪贴板
+        try {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            StringSelection selection = new StringSelection(analysisText.toString());
+            clipboard.setContents(selection, null);
+
+            JOptionPane.showMessageDialog(mPanel,
+                "分析文本已复制到剪贴板！\n\n您可以直接粘贴到DeepSeek或豆包等AI助手进行分析。",
+                "复制成功",
+                JOptionPane.INFORMATION_MESSAGE);
+            LogUtil.info("股票分析文本已复制到剪贴板");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(mPanel,
+                "复制到剪贴板失败：" + ex.getMessage(),
+                "错误",
+                JOptionPane.ERROR_MESSAGE);
+            LogUtil.info("复制到剪贴板失败：" + ex.getMessage());
+        }
     }
 
 }
