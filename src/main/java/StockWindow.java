@@ -148,13 +148,56 @@ public class StockWindow implements ToolWindowFactory {
             }
         };
 
-        // 创建各个分析场景的按钮（统一使用今日机会图标）
-        AnActionButton todayOpportunityAction = createAnalysisButton("今日机会", AllIcons.Actions.IntentionBulb, "today_opportunity");
-        AnActionButton tomorrowOpportunityAction = createAnalysisButton("明日机会", AllIcons.Actions.IntentionBulb, "tomorrow_opportunity");
-        AnActionButton positionRiskAction = createAnalysisButton("仓位风险", AllIcons.Actions.IntentionBulb, "position_risk");
-        AnActionButton yesterdayReviewAction = createAnalysisButton("昨日复盘", AllIcons.Actions.IntentionBulb, "yesterday_review");
-        AnActionButton todayReviewAction = createAnalysisButton("今日复盘", AllIcons.Actions.IntentionBulb, "today_review");
-        AnActionButton abnormalMovementAction = createAnalysisButton("异动实事", AllIcons.Actions.IntentionBulb, "abnormal_movement");
+        // 创建AI分析下拉菜单按钮
+        AnActionButton analysisAction = new AnActionButton("AI分析提示词", AllIcons.Actions.IntentionBulb) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                // 创建下拉菜单选项
+                String[] options = {
+                    "今日机会分析",
+                    "明日机会分析",
+                    "仓位风险分析",
+                    "昨日复盘分析",
+                    "今日复盘分析",
+                    "异动实事分析"
+                };
+                
+                String[] types = {
+                    "today_opportunity",
+                    "tomorrow_opportunity",
+                    "position_risk",
+                    "yesterday_review",
+                    "today_review",
+                    "abnormal_movement"
+                };
+                
+                // 显示弹出菜单
+                JBPopupFactory.getInstance().createListPopup(new BaseListPopupStep<String>("选择分析类型", options) {
+                    @Override
+                    public @NotNull String getTextFor(String value) {
+                        return value;
+                    }
+
+                    @Override
+                    public @Nullable PopupStep onChosen(String selectedValue, boolean finalChoice) {
+                        // 找到对应的type
+                        int index = -1;
+                        for (int i = 0; i < options.length; i++) {
+                            if (options[i].equals(selectedValue)) {
+                                index = i;
+                                break;
+                            }
+                        }
+                        
+                        if (index >= 0 && index < types.length) {
+                            copyAnalysisToClipboard(types[index]);
+                        }
+                        
+                        return FINAL_CHOICE;
+                    }
+                }).showInBestPositionFor(e.getDataContext());
+            }
+        };
         ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(table)
                 .addExtraActions(
                     new AnActionButton("持续刷新当前表格数据", AllIcons.Actions.Refresh) {
@@ -165,12 +208,7 @@ public class StockWindow implements ToolWindowFactory {
                         }
                     },
                     refreshAction,
-                    todayOpportunityAction,
-                    tomorrowOpportunityAction,
-                    positionRiskAction,
-                    yesterdayReviewAction,
-                    todayReviewAction,
-                    abnormalMovementAction
+                    analysisAction
                 )
                 .setToolbarPosition(ActionToolbarPosition.TOP);
         JPanel toolPanel = toolbarDecorator.createPanel();
@@ -236,18 +274,6 @@ public class StockWindow implements ToolWindowFactory {
 
     private static List<String> loadStocks(){
         return SettingsWindow.getConfigList("key_stocks");
-    }
-
-    /**
-     * 创建分析按钮
-     */
-    private AnActionButton createAnalysisButton(String title, javax.swing.Icon icon, String type) {
-        return new AnActionButton(title, icon) {
-            @Override
-            public void actionPerformed(@NotNull AnActionEvent e) {
-                copyAnalysisToClipboard(type);
-            }
-        };
     }
 
     /**
