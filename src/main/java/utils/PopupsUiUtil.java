@@ -139,9 +139,17 @@ public class PopupsUiUtil {
                 }
             }
         });
-        JBPopupFactory.getInstance().createBalloonBuilder(tabs)
+        // 设置弹窗的最小尺寸，确保内容能够完整显示
+        Balloon balloon = JBPopupFactory.getInstance().createBalloonBuilder(tabs)
                 .setBorderInsets(new Insets(0, 0, 0, 0))
-                .createBalloon().show(RelativePoint.fromScreen(showByPoint), Balloon.Position.atRight);
+                .setHideOnAction(false)
+                .setHideOnFrameResize(false)
+                .setHideOnClickOutside(true)
+                .createBalloon();
+        // 设置最小尺寸，让弹窗足够大以显示完整的图表
+        Dimension minSize = new Dimension(800, 600);
+        tabs.setPreferredSize(minSize);
+        balloon.show(RelativePoint.fromScreen(showByPoint), Balloon.Position.atRight);
     }
 
     public enum FundShowType {
