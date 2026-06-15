@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.huage2580'
-version '2.1.0'
+version '2.2.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -35,16 +35,17 @@ dependencies {
     }
 
     intellijPlatform {
-        intellijIdea("2026.1")
+//        intellijIdea("2026.1")
+        intellijIdeaUltimate("2023.3")
     }
 }
 
 patchPluginXml {
     changeNotes.set("""
-        v2.2 适配 IntelliJ IDEA 2026<br>
+        v2.2 适配 DataGrip 2023.3 / IntelliJ IDEA 2023.3<br>
     """)
-    sinceBuild.set("261")
-    untilBuild.set("")
+    sinceBuild.set("233")
+    untilBuild.set("299.*")
 }
 
 tasks.withType(JavaCompile) {

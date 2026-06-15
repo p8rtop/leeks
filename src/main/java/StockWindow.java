@@ -198,6 +198,14 @@ public class StockWindow implements ToolWindowFactory {
                 }).showInBestPositionFor(e.getDataContext());
             }
         };
+        
+        // 创建取消选中按钮
+        AnActionButton clearSelectionAction = new AnActionButton("取消选中", AllIcons.Actions.Cancel) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                table.clearSelection();
+            }
+        };
         ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(table)
                 .addExtraActions(
                     new AnActionButton("持续刷新当前表格数据", AllIcons.Actions.Refresh) {
@@ -208,7 +216,8 @@ public class StockWindow implements ToolWindowFactory {
                         }
                     },
                     refreshAction,
-                    analysisAction
+                    analysisAction,
+                    clearSelectionAction
                 )
                 .setToolbarPosition(ActionToolbarPosition.TOP);
         JPanel toolPanel = toolbarDecorator.createPanel();
