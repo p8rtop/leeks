@@ -46,6 +46,7 @@ import java.util.List;
 public class StockWindow implements ToolWindowFactory {
     public static final String NAME = "Stock";
     private JPanel mPanel;
+    private Project currentProject;
 
     static StockRefreshHandler handler;
 
@@ -54,6 +55,9 @@ public class StockWindow implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        this.currentProject = project;
+        // 保存project到LogUtil，供弹窗使用
+        LogUtil.setProject(project);
         ContentFactory contentFactory = ContentFactory.getInstance();
         Content content = contentFactory.createContent(mPanel, NAME, false);
         ContentManager contentManager = toolWindow.getContentManager();
@@ -74,7 +78,10 @@ public class StockWindow implements ToolWindowFactory {
         return mPanel;
     }
 
-    static {
+    /**
+     * 初始化表格和监听器
+     */
+    private void initTable() {
         refreshTimeLabel = new JLabel();
         refreshTimeLabel.setToolTipText("最后刷新时间");
         refreshTimeLabel.setBorder(new EmptyBorder(0, 0, 0, 5));
@@ -99,9 +106,10 @@ public class StockWindow implements ToolWindowFactory {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (table.getSelectedRow() < 0)
+                if (table.getSelectedRow() < 0 || handler == null)
                     return;
-                String code = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), handler.codeColumnIndex));//FIX 移动列导致的BUG
+                int modelRow = table.convertRowIndexToModel(table.getSelectedRow());
+                String code = String.valueOf(table.getModel().getValueAt(modelRow, handler.codeColumnIndex));//FIX 移动列导致的BUG
                 if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
                     // 鼠标左键双击
                     try {
@@ -136,6 +144,8 @@ public class StockWindow implements ToolWindowFactory {
     }
 
     public StockWindow() {
+        // 初始化表格
+        initTable();
 
         //切换接口
         handler = factoryHandler();
