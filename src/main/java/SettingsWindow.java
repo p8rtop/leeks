@@ -40,6 +40,14 @@ public class SettingsWindow  implements Configurable {
     private JTextArea textAreaYesterdayReview;
     private JTextArea textAreaTodayReview;
     private JTextArea textAreaAbnormalMovement;
+    
+    // 提示词标题标签
+    private JLabel labelTodayOpportunity;
+    private JLabel labelTomorrowOpportunity;
+    private JLabel labelPositionRisk;
+    private JLabel labelYesterdayReview;
+    private JLabel labelTodayReview;
+    private JLabel labelAbnormalMovement;
 
     @Override
     public @Nls(capitalization = Nls.Capitalization.Title) String getDisplayName() {
@@ -67,13 +75,23 @@ public class SettingsWindow  implements Configurable {
             }
         });
         
-        // 加载AI分析提示词配置
-        textAreaTodayOpportunity.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_TODAY_OPPORTUNITY, ""));
-        textAreaTomorrowOpportunity.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_TOMORROW_OPPORTUNITY, ""));
-        textAreaPositionRisk.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_POSITION_RISK, ""));
-        textAreaYesterdayReview.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_YESTERDAY_REVIEW, ""));
-        textAreaTodayReview.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_TODAY_REVIEW, ""));
-        textAreaAbnormalMovement.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_ABNORMAL_MOVEMENT, ""));
+        // 加载AI分析提示词配置（如果没有自定义则显示默认提示词）
+        textAreaTodayOpportunity.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_TODAY_OPPORTUNITY, utils.AnalysisPromptUtils.getTodayOpportunityPrompt()));
+        textAreaTomorrowOpportunity.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_TOMORROW_OPPORTUNITY, utils.AnalysisPromptUtils.getTomorrowOpportunityPrompt()));
+        textAreaPositionRisk.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_POSITION_RISK, utils.AnalysisPromptUtils.getPositionRiskPrompt()));
+        textAreaYesterdayReview.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_YESTERDAY_REVIEW, utils.AnalysisPromptUtils.getYesterdayReviewPrompt()));
+        textAreaTodayReview.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_TODAY_REVIEW, utils.AnalysisPromptUtils.getTodayReviewPrompt()));
+        textAreaAbnormalMovement.setText(instance.getValue(utils.AnalysisPromptUtils.KEY_ABNORMAL_MOVEMENT, utils.AnalysisPromptUtils.getAbnormalMovementPrompt()));
+        
+        // 设置提示词标题为红色字体
+        java.awt.Color redColor = new java.awt.Color(220, 53, 69);
+        labelTodayOpportunity.setForeground(redColor);
+        labelTomorrowOpportunity.setForeground(redColor);
+        labelPositionRisk.setForeground(redColor);
+        labelYesterdayReview.setForeground(redColor);
+        labelTodayReview.setForeground(redColor);
+        labelAbnormalMovement.setForeground(redColor);
+        
         return panel1;
     }
 

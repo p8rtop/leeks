@@ -127,7 +127,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="a1b2c" class="javax.swing.JLabel">
+              <component id="a1b2c" class="javax.swing.JLabel" binding="labelTodayOpportunity">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -157,7 +157,7 @@
                   </component>
                 </children>
               </scrollpane>
-              <component id="a3b4c" class="javax.swing.JLabel">
+              <component id="a3b4c" class="javax.swing.JLabel" binding="labelTomorrowOpportunity">
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -187,7 +187,7 @@
                   </component>
                 </children>
               </scrollpane>
-              <component id="a5b6c" class="javax.swing.JLabel">
+              <component id="a5b6c" class="javax.swing.JLabel" binding="labelPositionRisk">
                 <constraints>
                   <grid row="4" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -217,7 +217,7 @@
                   </component>
                 </children>
               </scrollpane>
-              <component id="b1c2d" class="javax.swing.JLabel">
+              <component id="b1c2d" class="javax.swing.JLabel" binding="labelYesterdayReview">
                 <constraints>
                   <grid row="6" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -247,7 +247,7 @@
                   </component>
                 </children>
               </scrollpane>
-              <component id="b3c4d" class="javax.swing.JLabel">
+              <component id="b3c4d" class="javax.swing.JLabel" binding="labelTodayReview">
                 <constraints>
                   <grid row="8" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -277,7 +277,7 @@
                   </component>
                 </children>
               </scrollpane>
-              <component id="b5c6d" class="javax.swing.JLabel">
+              <component id="b5c6d" class="javax.swing.JLabel" binding="labelAbnormalMovement">
                 <constraints>
                   <grid row="10" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
