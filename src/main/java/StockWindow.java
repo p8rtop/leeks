@@ -34,6 +34,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -147,13 +148,13 @@ public class StockWindow implements ToolWindowFactory {
             }
         };
 
-        // 创建各个分析场景的按钮
+        // 创建各个分析场景的按钮（统一使用今日机会图标）
         AnActionButton todayOpportunityAction = createAnalysisButton("今日机会", AllIcons.Actions.IntentionBulb, "today_opportunity");
-        AnActionButton tomorrowOpportunityAction = createAnalysisButton("明日机会", AllIcons.Actions.Forward, "tomorrow_opportunity");
-        AnActionButton positionRiskAction = createAnalysisButton("仓位风险", AllIcons.General.Error, "position_risk");
-        AnActionButton yesterdayReviewAction = createAnalysisButton("昨日复盘", AllIcons.Actions.Back, "yesterday_review");
-        AnActionButton todayReviewAction = createAnalysisButton("今日复盘", AllIcons.Actions.Refresh, "today_review");
-        AnActionButton abnormalMovementAction = createAnalysisButton("异动实事", AllIcons.Actions.Refresh, "abnormal_movement");
+        AnActionButton tomorrowOpportunityAction = createAnalysisButton("明日机会", AllIcons.Actions.IntentionBulb, "tomorrow_opportunity");
+        AnActionButton positionRiskAction = createAnalysisButton("仓位风险", AllIcons.Actions.IntentionBulb, "position_risk");
+        AnActionButton yesterdayReviewAction = createAnalysisButton("昨日复盘", AllIcons.Actions.IntentionBulb, "yesterday_review");
+        AnActionButton todayReviewAction = createAnalysisButton("今日复盘", AllIcons.Actions.IntentionBulb, "today_review");
+        AnActionButton abnormalMovementAction = createAnalysisButton("异动实事", AllIcons.Actions.IntentionBulb, "abnormal_movement");
         ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(table)
                 .addExtraActions(
                     new AnActionButton("持续刷新当前表格数据", AllIcons.Actions.Refresh) {
@@ -331,18 +332,62 @@ public class StockWindow implements ToolWindowFactory {
             StringSelection selection = new StringSelection(analysisText.toString());
             clipboard.setContents(selection, null);
 
-            JOptionPane.showMessageDialog(mPanel,
-                "分析文本已复制到剪贴板！\n\n您可以直接粘贴到DeepSeek或豆包等AI助手进行分析。",
-                "复制成功",
-                JOptionPane.INFORMATION_MESSAGE);
-            LogUtil.info("股票分析文本已复制到剪贴板");
+            // 获取分析类型名称
+            String typeName;
+            switch (type) {
+                case "today_opportunity":
+                    typeName = "今日机会";
+                    break;
+                case "tomorrow_opportunity":
+                    typeName = "明日机会";
+                    break;
+                case "position_risk":
+                    typeName = "仓位风险";
+                    break;
+                case "yesterday_review":
+                    typeName = "昨日复盘";
+                    break;
+                case "today_review":
+                    typeName = "今日复盘";
+                    break;
+                case "abnormal_movement":
+                    typeName = "异动实事";
+                    break;
+                default:
+                    typeName = "股票";
+            }
+
+            // 使用状态栏提示代替弹窗
+            LogUtil.info("✓ [" + typeName + "]分析文本已复制到剪贴板，可直接粘贴到AI助手进行分析");
+            
+            // 在刷新时间标签处显示临时提示
+            String originalText = refreshTimeLabel.getText();
+            refreshTimeLabel.setText("✓ " + typeName + "复制成功！");
+            refreshTimeLabel.setForeground(new java.awt.Color(40, 167, 69)); // 绿色
+            
+            // 2秒后恢复原状
+            Timer timer = new Timer(2000, e -> {
+                refreshTimeLabel.setText(originalText);
+                refreshTimeLabel.setForeground(UIManager.getColor("Label.foreground"));
+            });
+            timer.setRepeats(false);
+            timer.start();
+            
         } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(mPanel,
-                "复制到剪贴板失败：" + ex.getMessage(),
-                "错误",
-                JOptionPane.ERROR_MESSAGE);
-            LogUtil.info("复制到剪贴板失败：" + ex.getMessage());
+            LogUtil.info("✗ 复制到剪贴板失败：" + ex.getMessage());
+            
+            // 显示错误提示
+            String originalText = refreshTimeLabel.getText();
+            refreshTimeLabel.setText("✗ 复制失败");
+            refreshTimeLabel.setForeground(new java.awt.Color(220, 53, 69)); // 红色
+            
+            Timer timer = new Timer(2000, e -> {
+                refreshTimeLabel.setText(originalText);
+                refreshTimeLabel.setForeground(UIManager.getColor("Label.foreground"));
+            });
+            timer.setRepeats(false);
+            timer.start();
         }
     }
 
