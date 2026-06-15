@@ -199,11 +199,12 @@ public class StockWindow implements ToolWindowFactory {
             }
         };
         
-        // 创建取消选中按钮
-        AnActionButton clearSelectionAction = new AnActionButton("取消选中", AllIcons.Actions.Cancel) {
+        // 创建重置按钮
+        AnActionButton resetAction = new AnActionButton("重置表格", AllIcons.Actions.Restart) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                table.clearSelection();
+                // 重新初始化表格
+                apply();
             }
         };
         ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(table)
@@ -217,7 +218,7 @@ public class StockWindow implements ToolWindowFactory {
                     },
                     refreshAction,
                     analysisAction,
-                    clearSelectionAction
+                    resetAction
                 )
                 .setToolbarPosition(ActionToolbarPosition.TOP);
         JPanel toolPanel = toolbarDecorator.createPanel();
@@ -250,6 +251,10 @@ public class StockWindow implements ToolWindowFactory {
             handler.clearRow();
             handler.setupTable(loadStocks());
             refresh();
+            // 清除表头排序状态，移除排序箭头
+            if (table.getRowSorter() != null) {
+                table.getRowSorter().setSortKeys(null);
+            }
         }
     }
     public static void refresh() {

@@ -80,8 +80,6 @@ public abstract class StockRefreshHandler extends DefaultTableModel {
         Arrays.stream("当前价,涨跌,涨跌幅,最高价,最低价".split(",")).map(name -> WindowUtils.getColumnIndexByName(columnNames, name))
                 .filter(index -> index >= 0).forEach(index -> rowSorter.setComparator(index, doubleComparator));
         table.setRowSorter(rowSorter);
-        // 禁用表头排序按钮
-        table.getTableHeader().setReorderingAllowed(false);
         columnColors(colorful);
     }
 
