@@ -344,7 +344,7 @@ public class StockBean {
             String ratioStr = this.conditionRatio.replace("%", "");
             double ratio = Double.parseDouble(ratioStr) / 100.0;
             double expectedPrice = condPrice * (1 + ratio);
-            return String.format("%.2f", expectedPrice);
+            return String.format("%.3f", expectedPrice);
         } catch (NumberFormatException e) {
             return "--";
         }
@@ -363,8 +363,8 @@ public class StockBean {
             double currentPrice = Double.parseDouble(this.now);
             double expPrice = Double.parseDouble(this.targetPrice);
             double diff = expPrice - currentPrice;
-            // 保留两位小数，正数表示还有上涨空间，负数表示已超过预期价
-            return String.format("%.2f", diff);
+            // 保留三位小数，正数表示还有上涨空间，负数表示已超过预期价
+            return String.format("%.3f", diff);
         } catch (NumberFormatException e) {
             return "--";
         }
