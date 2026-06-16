@@ -29,42 +29,58 @@ public class StockBean {
     private String bonds;//持仓
     private String incomePercent;//收益率
     private String income;//收益
-    private String targetPrice;//目标价
+    private String targetPrice;//目标价（已废弃，保留兼容）
+    private String conditionPrice;//条件价
+    private String conditionRatio;//条件比
 
     public StockBean() {
     }
 
     //配置code同时配置成本价和成本值
+    // 新格式：股票代码,条件价,条件比,成本价,持仓数量
     public StockBean(String code) {
         if (StringUtils.isNotBlank(code)) {
             String[] codeStr = code.split(",");
-            if (codeStr.length > 3) {
+            if (codeStr.length > 4) {
                 this.code = codeStr[0];
-                this.targetPrice = codeStr[1];
-                this.costPrise = codeStr[2];
-//                this.cost = codeStr[2];
-                this.bonds = codeStr[3];
+                this.conditionPrice = codeStr[1];
+                this.conditionRatio = codeStr[2];
+                this.costPrise = codeStr[3];
+                this.bonds = codeStr[4];
+                this.targetPrice = calculateExpectedPrice();
+            } else if (codeStr.length > 3) {
+                this.code = codeStr[0];
+                this.conditionPrice = codeStr[1];
+                this.conditionRatio = codeStr[2];
+                this.costPrise = codeStr[3];
+                this.bonds = "--";
+                this.targetPrice = calculateExpectedPrice();
             } else if (codeStr.length > 2) {
                 this.code = codeStr[0];
-                this.targetPrice = "--";
-                this.costPrise = codeStr[1];
-//                this.cost = codeStr[2];
-                this.bonds = codeStr[2];
+                this.conditionPrice = codeStr[1];
+                this.conditionRatio = codeStr[2];
+                this.costPrise = "--";
+                this.bonds = "--";
+                this.targetPrice = calculateExpectedPrice();
             } else if (codeStr.length > 1) {
                 this.code = codeStr[0];
-                this.targetPrice = codeStr[1];
+                this.conditionPrice = codeStr[1];
+                this.conditionRatio = "--";
                 this.costPrise = "--";
-//                this.cost = "--";
                 this.bonds = "--";
+                this.targetPrice = "--";
             } else {
                 this.code = codeStr[0];
+                this.conditionPrice = "--";
+                this.conditionRatio = "--";
                 this.costPrise = "--";
-//                this.cost = "--";
                 this.bonds = "--";
                 this.targetPrice = "--";
             }
         } else {
             this.code = code;
+            this.conditionPrice = "--";
+            this.conditionRatio = "--";
             this.costPrise = "--";
             this.bonds = "--";
             this.targetPrice = "--";
@@ -76,24 +92,34 @@ public class StockBean {
         this.code = code;
         if(codeMap.containsKey(code)){
             String[] codeStr = codeMap.get(code);
-            if (codeStr.length > 3) {
+            if (codeStr.length > 4) {
                 this.code = codeStr[0];
-                this.targetPrice = codeStr[1];
-                this.costPrise = codeStr[2];
-//                this.cost = codeStr[2];
-                this.bonds = codeStr[3];
+                this.conditionPrice = codeStr[1];
+                this.conditionRatio = codeStr[2];
+                this.costPrise = codeStr[3];
+                this.bonds = codeStr[4];
+                this.targetPrice = calculateExpectedPrice();
+            } else if (codeStr.length > 3) {
+                this.code = codeStr[0];
+                this.conditionPrice = codeStr[1];
+                this.conditionRatio = codeStr[2];
+                this.costPrise = codeStr[3];
+                this.bonds = "--";
+                this.targetPrice = calculateExpectedPrice();
             } else if (codeStr.length > 2) {
                 this.code = codeStr[0];
-                this.targetPrice = "--";
-                this.costPrise = codeStr[1];
-//                this.cost = codeStr[2];
-                this.bonds = codeStr[2];
+                this.conditionPrice = codeStr[1];
+                this.conditionRatio = codeStr[2];
+                this.costPrise = "--";
+                this.bonds = "--";
+                this.targetPrice = calculateExpectedPrice();
             } else if (codeStr.length > 1) {
                 this.code = codeStr[0];
-                this.targetPrice = codeStr[1];
+                this.conditionPrice = codeStr[1];
+                this.conditionRatio = "--";
                 this.costPrise = "--";
-//                this.cost = "--";
                 this.bonds = "--";
+                this.targetPrice = "--";
             }
         }
     }
@@ -210,6 +236,22 @@ public class StockBean {
         this.targetPrice = targetPrice;
     }
 
+    public String getConditionPrice() {
+        return conditionPrice;
+    }
+
+    public void setConditionPrice(String conditionPrice) {
+        this.conditionPrice = conditionPrice;
+    }
+
+    public String getConditionRatio() {
+        return conditionRatio;
+    }
+
+    public void setConditionRatio(String conditionRatio) {
+        this.conditionRatio = conditionRatio;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -267,10 +309,14 @@ public class StockBean {
                 return this.getIncomePercent() != null ? this.getIncomePercent() : "--";
             case "收益":
                 return this.getIncome();
-            case "目标价":
+            case "预期价":
                 return this.getTargetPrice();
             case "进度":
                 return calculateProgress();
+            case "条件价":
+                return this.getConditionPrice();
+            case "条件比":
+                return this.getConditionRatio();
             case "更新时间":
                 String timeStr = "--";
                 if (this.getTime() != null) {
@@ -284,8 +330,29 @@ public class StockBean {
     }
 
     /**
-     * 计算当前价到目标价的差价
-     * @return 差价字符串（目标价-当前价）
+     * 计算预期价 = 条件价 * (1 + 条件比)
+     * @return 预期价字符串
+     */
+    private String calculateExpectedPrice() {
+        if ("--".equals(this.conditionPrice) || "--".equals(this.conditionRatio) ||
+            this.conditionPrice == null || this.conditionRatio == null) {
+            return "--";
+        }
+        try {
+            double condPrice = Double.parseDouble(this.conditionPrice);
+            // 条件比可能是百分数格式，如 "10%" 或 "-5%"
+            String ratioStr = this.conditionRatio.replace("%", "");
+            double ratio = Double.parseDouble(ratioStr) / 100.0;
+            double expectedPrice = condPrice * (1 + ratio);
+            return String.format("%.2f", expectedPrice);
+        } catch (NumberFormatException e) {
+            return "--";
+        }
+    }
+
+    /**
+     * 计算当前价到预期价的差价
+     * @return 差价字符串（预期价-当前价）
      */
     private String calculateProgress() {
         if ("--".equals(this.now) || "--".equals(this.targetPrice) || 
@@ -294,9 +361,9 @@ public class StockBean {
         }
         try {
             double currentPrice = Double.parseDouble(this.now);
-            double target = Double.parseDouble(this.targetPrice);
-            double diff = target - currentPrice;
-            // 保留两位小数，正数表示还有上涨空间，负数表示已超过目标价
+            double expPrice = Double.parseDouble(this.targetPrice);
+            double diff = expPrice - currentPrice;
+            // 保留两位小数，正数表示还有上涨空间，负数表示已超过预期价
             return String.format("%.2f", diff);
         } catch (NumberFormatException e) {
             return "--";

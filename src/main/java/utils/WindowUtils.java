@@ -9,8 +9,8 @@ import java.util.HashMap;
  */
 public class WindowUtils {
     //股票表头
-    public static final String STOCK_TABLE_HEADER_KEY = "stock_table_header_key3"; //移动表头时存储的key
-    public static final String STOCK_TABLE_HEADER_VALUE = "编码,股票名称,涨跌,涨跌幅,最高价,最低价,当前价,成本价,持仓,收益率,收益,目标价,进度,更新时间";
+    public static final String STOCK_TABLE_HEADER_KEY = "stock_table_header_key4"; //移动表头时存储的key
+    public static final String STOCK_TABLE_HEADER_VALUE = "编码,股票名称,涨跌,涨跌幅,当前价,进度,预期价,收益率,收益,持仓,成本价,最高价,最低价,条件价,条件比,更新时间";
 
     private static HashMap<String,String> remapPinYinMap = new HashMap<>();
 
@@ -28,8 +28,10 @@ public class WindowUtils {
         remapPinYinMap.put(PinYinUtils.toPinYin("持仓"), "持仓");
         remapPinYinMap.put(PinYinUtils.toPinYin("收益率"), "收益率");
         remapPinYinMap.put(PinYinUtils.toPinYin("收益"), "收益");
-        remapPinYinMap.put(PinYinUtils.toPinYin("目标价"), "目标价");
+        remapPinYinMap.put(PinYinUtils.toPinYin("预期价"), "预期价");
         remapPinYinMap.put(PinYinUtils.toPinYin("进度"), "进度");
+        remapPinYinMap.put(PinYinUtils.toPinYin("条件价"), "条件价");
+        remapPinYinMap.put(PinYinUtils.toPinYin("条件比"), "条件比");
     }
 
 

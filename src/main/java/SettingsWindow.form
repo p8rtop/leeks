@@ -68,7 +68,7 @@
                   <forms defaultalign-vert="false"/>
                 </constraints>
                 <properties>
-                  <text value="股票编码，英文分号分隔（成本价和持仓接在编码后用逗号分隔）："/>
+                  <text value="股票编码，英文分号分隔（条件价,条件比,成本价,持仓接在编码后用逗号分隔）："/>
                 </properties>
               </component>
               <scrollpane id="e0430">
@@ -86,7 +86,7 @@
                       <minimumSize width="370" height="17"/>
                       <preferredSize width="370" height="190"/>
                       <rows value="10"/>
-                      <toolTipText value="股票编码，英文逗号分隔，例如：【sh000001,12.451,1200;hk00700,13.412,2000】"/>
+                      <toolTipText value="股票编码，英文分号分隔，例如：【sh000001,2000,10%,1800,1200;hk00700,400,5%,350,2000】"/>
                     </properties>
                     <clientProperties>
                       <html.disable class="java.lang.Boolean" value="false"/>

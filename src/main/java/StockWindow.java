@@ -325,17 +325,19 @@ public class StockWindow implements ToolWindowFactory {
             int modelRow = table.convertRowIndexToModel(i);
             String code = String.valueOf(table.getModel().getValueAt(modelRow, handler.codeColumnIndex));
             String name = String.valueOf(table.getModel().getValueAt(modelRow, 1)); // 股票名称
-            String currentPrice = String.valueOf(table.getModel().getValueAt(modelRow, 6)); // 当前价
             String change = String.valueOf(table.getModel().getValueAt(modelRow, 2)); // 涨跌
             String changePercent = String.valueOf(table.getModel().getValueAt(modelRow, 3)); // 涨跌幅
-            String highPrice = String.valueOf(table.getModel().getValueAt(modelRow, 4)); // 最高价
-            String lowPrice = String.valueOf(table.getModel().getValueAt(modelRow, 5)); // 最低价
-            String costPrice = String.valueOf(table.getModel().getValueAt(modelRow, 7)); // 成本价
-            String bonds = String.valueOf(table.getModel().getValueAt(modelRow, 8)); // 持仓
-            String incomePercent = String.valueOf(table.getModel().getValueAt(modelRow, 9)); // 收益率
-            String income = String.valueOf(table.getModel().getValueAt(modelRow, 10)); // 收益
-            String targetPrice = String.valueOf(table.getModel().getValueAt(modelRow, 11)); // 目标价
-            String progress = String.valueOf(table.getModel().getValueAt(modelRow, 12)); // 进度
+            String currentPrice = String.valueOf(table.getModel().getValueAt(modelRow, 4)); // 当前价
+            String progress = String.valueOf(table.getModel().getValueAt(modelRow, 5)); // 进度
+            String expectedPrice = String.valueOf(table.getModel().getValueAt(modelRow, 6)); // 预期价
+            String incomePercent = String.valueOf(table.getModel().getValueAt(modelRow, 7)); // 收益率
+            String income = String.valueOf(table.getModel().getValueAt(modelRow, 8)); // 收益
+            String bonds = String.valueOf(table.getModel().getValueAt(modelRow, 9)); // 持仓
+            String costPrice = String.valueOf(table.getModel().getValueAt(modelRow, 10)); // 成本价
+            String highPrice = String.valueOf(table.getModel().getValueAt(modelRow, 11)); // 最高价
+            String lowPrice = String.valueOf(table.getModel().getValueAt(modelRow, 12)); // 最低价
+            String conditionPrice = String.valueOf(table.getModel().getValueAt(modelRow, 13)); // 条件价
+            String conditionRatio = String.valueOf(table.getModel().getValueAt(modelRow, 14)); // 条件比
 
             stockListBuilder.append(String.format("%d. %s(%s)\n", i + 1, name, code));
             stockListBuilder.append(String.format("   当前价: %s, 涨跌: %s, 涨跌幅: %s\n", currentPrice, change, changePercent));
@@ -344,8 +346,11 @@ public class StockWindow implements ToolWindowFactory {
                 stockListBuilder.append(String.format("   成本价: %s, 持仓: %s股, 收益率: %s%%, 收益: %s元\n",
                     costPrice, bonds, incomePercent, income));
             }
-            if (!"--".equals(targetPrice) && !"null".equals(targetPrice)) {
-                stockListBuilder.append(String.format("   目标价: %s, 进度: %s\n", targetPrice, progress));
+            if (!"--".equals(expectedPrice) && !"null".equals(expectedPrice)) {
+                stockListBuilder.append(String.format("   预期价: %s, 进度: %s\n", expectedPrice, progress));
+            }
+            if (!"--".equals(conditionPrice) && !"null".equals(conditionPrice)) {
+                stockListBuilder.append(String.format("   条件价: %s, 条件比: %s\n", conditionPrice, conditionRatio));
             }
             stockListBuilder.append("\n");
         }
