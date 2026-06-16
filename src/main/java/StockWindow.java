@@ -334,6 +334,8 @@ public class StockWindow implements ToolWindowFactory {
             String bonds = String.valueOf(table.getModel().getValueAt(modelRow, 8)); // 持仓
             String incomePercent = String.valueOf(table.getModel().getValueAt(modelRow, 9)); // 收益率
             String income = String.valueOf(table.getModel().getValueAt(modelRow, 10)); // 收益
+            String targetPrice = String.valueOf(table.getModel().getValueAt(modelRow, 11)); // 目标价
+            String progress = String.valueOf(table.getModel().getValueAt(modelRow, 12)); // 进度
 
             stockListBuilder.append(String.format("%d. %s(%s)\n", i + 1, name, code));
             stockListBuilder.append(String.format("   当前价: %s, 涨跌: %s, 涨跌幅: %s\n", currentPrice, change, changePercent));
@@ -341,6 +343,9 @@ public class StockWindow implements ToolWindowFactory {
             if (!"--".equals(costPrice) && !"null".equals(costPrice)) {
                 stockListBuilder.append(String.format("   成本价: %s, 持仓: %s股, 收益率: %s%%, 收益: %s元\n",
                     costPrice, bonds, incomePercent, income));
+            }
+            if (!"--".equals(targetPrice) && !"null".equals(targetPrice)) {
+                stockListBuilder.append(String.format("   目标价: %s, 进度: %s\n", targetPrice, progress));
             }
             stockListBuilder.append("\n");
         }

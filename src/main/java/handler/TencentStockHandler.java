@@ -91,7 +91,7 @@ public class TencentStockHandler extends StockRefreshHandler {
 
             BigDecimal now = new BigDecimal(values[3]);
             String costPriceStr = bean.getCostPrise();
-            if (StringUtils.isNotEmpty(costPriceStr)) {
+            if (StringUtils.isNotEmpty(costPriceStr) && !"--".equals(costPriceStr)) {
                 BigDecimal costPriceDec = new BigDecimal(costPriceStr);
                 BigDecimal incomeDiff = now.add(costPriceDec.negate());
                 if (costPriceDec.compareTo(BigDecimal.ZERO) <= 0) {
@@ -105,7 +105,7 @@ public class TencentStockHandler extends StockRefreshHandler {
                 }
 
                 String bondStr = bean.getBonds();
-                if (StringUtils.isNotEmpty(bondStr)) {
+                if (StringUtils.isNotEmpty(bondStr) && !"--".equals(bondStr)) {
                     BigDecimal bondDec = new BigDecimal(bondStr);
                     BigDecimal incomeDec = incomeDiff.multiply(bondDec)
                             .setScale(2, RoundingMode.HALF_UP);

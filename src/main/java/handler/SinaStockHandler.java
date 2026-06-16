@@ -93,7 +93,7 @@ public class SinaStockHandler extends StockRefreshHandler {
             bean.setMin(split[5]);
 
             String costPriceStr = bean.getCostPrise();
-            if (StringUtils.isNotEmpty(costPriceStr)) {
+            if (StringUtils.isNotEmpty(costPriceStr) && !"--".equals(costPriceStr)) {
                 BigDecimal costPriceDec = new BigDecimal(costPriceStr);
                 BigDecimal incomeDiff = now.add(costPriceDec.negate());
                 BigDecimal incomePercentDec = incomeDiff.divide(costPriceDec, 5, RoundingMode.HALF_UP)
@@ -103,7 +103,7 @@ public class SinaStockHandler extends StockRefreshHandler {
                 bean.setIncomePercent(incomePercentDec.toString());
 
                 String bondStr = bean.getBonds();
-                if (StringUtils.isNotEmpty(bondStr)) {
+                if (StringUtils.isNotEmpty(bondStr) && !"--".equals(bondStr)) {
                     BigDecimal bondDec = new BigDecimal(bondStr);
                     BigDecimal incomeDec = incomeDiff.multiply(bondDec)
                             .setScale(2, RoundingMode.HALF_UP);

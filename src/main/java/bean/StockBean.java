@@ -29,6 +29,7 @@ public class StockBean {
     private String bonds;//持仓
     private String incomePercent;//收益率
     private String income;//收益
+    private String targetPrice;//目标价
 
     public StockBean() {
     }
@@ -37,19 +38,36 @@ public class StockBean {
     public StockBean(String code) {
         if (StringUtils.isNotBlank(code)) {
             String[] codeStr = code.split(",");
-            if (codeStr.length > 2) {
+            if (codeStr.length > 3) {
                 this.code = codeStr[0];
+                this.targetPrice = codeStr[1];
+                this.costPrise = codeStr[2];
+//                this.cost = codeStr[2];
+                this.bonds = codeStr[3];
+            } else if (codeStr.length > 2) {
+                this.code = codeStr[0];
+                this.targetPrice = "--";
                 this.costPrise = codeStr[1];
 //                this.cost = codeStr[2];
                 this.bonds = codeStr[2];
+            } else if (codeStr.length > 1) {
+                this.code = codeStr[0];
+                this.targetPrice = codeStr[1];
+                this.costPrise = "--";
+//                this.cost = "--";
+                this.bonds = "--";
             } else {
                 this.code = codeStr[0];
                 this.costPrise = "--";
 //                this.cost = "--";
                 this.bonds = "--";
+                this.targetPrice = "--";
             }
         } else {
             this.code = code;
+            this.costPrise = "--";
+            this.bonds = "--";
+            this.targetPrice = "--";
         }
         this.name = "--";
     }
@@ -58,11 +76,24 @@ public class StockBean {
         this.code = code;
         if(codeMap.containsKey(code)){
             String[] codeStr = codeMap.get(code);
-            if (codeStr.length > 2) {
+            if (codeStr.length > 3) {
                 this.code = codeStr[0];
+                this.targetPrice = codeStr[1];
+                this.costPrise = codeStr[2];
+//                this.cost = codeStr[2];
+                this.bonds = codeStr[3];
+            } else if (codeStr.length > 2) {
+                this.code = codeStr[0];
+                this.targetPrice = "--";
                 this.costPrise = codeStr[1];
 //                this.cost = codeStr[2];
                 this.bonds = codeStr[2];
+            } else if (codeStr.length > 1) {
+                this.code = codeStr[0];
+                this.targetPrice = codeStr[1];
+                this.costPrise = "--";
+//                this.cost = "--";
+                this.bonds = "--";
             }
         }
     }
@@ -171,6 +202,14 @@ public class StockBean {
         this.income = income;
     }
 
+    public String getTargetPrice() {
+        return targetPrice;
+    }
+
+    public void setTargetPrice(String targetPrice) {
+        this.targetPrice = targetPrice;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -221,9 +260,17 @@ public class StockBean {
             case "持仓":
                 return this.getBonds();
             case "收益率":
-                return this.getCostPrise() != null ? this.getIncomePercent() + "%" : this.getIncomePercent();
+                // 只有当成本价不是"--"且有收益率数据时才显示
+                if (this.getCostPrise() != null && !"--".equals(this.getCostPrise()) && this.getIncomePercent() != null) {
+                    return this.getIncomePercent() + "%";
+                }
+                return this.getIncomePercent() != null ? this.getIncomePercent() : "--";
             case "收益":
                 return this.getIncome();
+            case "目标价":
+                return this.getTargetPrice();
+            case "进度":
+                return calculateProgress();
             case "更新时间":
                 String timeStr = "--";
                 if (this.getTime() != null) {
@@ -233,6 +280,26 @@ public class StockBean {
             default:
                 return "";
 
+        }
+    }
+
+    /**
+     * 计算当前价到目标价的差价
+     * @return 差价字符串（目标价-当前价）
+     */
+    private String calculateProgress() {
+        if ("--".equals(this.now) || "--".equals(this.targetPrice) || 
+            this.now == null || this.targetPrice == null) {
+            return "--";
+        }
+        try {
+            double currentPrice = Double.parseDouble(this.now);
+            double target = Double.parseDouble(this.targetPrice);
+            double diff = target - currentPrice;
+            // 保留两位小数，正数表示还有上涨空间，负数表示已超过目标价
+            return String.format("%.2f", diff);
+        } catch (NumberFormatException e) {
+            return "--";
         }
     }
 }
